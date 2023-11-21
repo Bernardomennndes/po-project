@@ -2,7 +2,6 @@
 import Problem, { ProblemProps } from '@/components/Problem'
 import { Theme, Container, Flex, Callout, Heading } from '@radix-ui/themes';
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,6 +24,10 @@ export default function Home() {
     setError(true);
   }
 
+  const handleResolve = async () => {
+    const response = await fetch("/api/simplex")
+  };
+
   return (
     <main>
       <Theme>
@@ -40,6 +43,7 @@ export default function Home() {
               <Input onChange={handleChange} name="numVariables" placeholder="Num. de Variáveis" className="w-1/2" id='variables'/>
             </Flex>
             <Problem numRestrictions={problem.numRestrictions} numVariables={problem.numVariables} />
+            <Button onClick={() => handleResolve()} >Resolver</Button>
             {error && (
               <Callout.Root color="red">
                 <Callout.Text>
