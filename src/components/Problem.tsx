@@ -32,15 +32,15 @@ const TableLine = ({ numVariables } : { numVariables: number }) => {
           <Flex align="center" direction="row" gap="1" key={index}>
             <Input type="text" style={{ width: 40 }} placeholder="0"/> 
             <Text>x{index + 1}</Text>
-            <Select>
+            <Select defaultValue='less'>
               <SelectTrigger className="w-[60px]">
                 <SelectValue placeholder="" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="apple">&le;</SelectItem>
-                  <SelectItem value="banana">&ge;</SelectItem>
-                  <SelectItem value="blueberry">=</SelectItem>
+                  <SelectItem value="less">&le;</SelectItem>
+                  <SelectItem value="more">&ge;</SelectItem>
+                  <SelectItem value="equal">=</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
