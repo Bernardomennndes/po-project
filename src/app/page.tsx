@@ -1,17 +1,39 @@
 "use client";
-import Problem, { ProblemProps } from '@/components/Problem'
-import { Theme, Container, Flex, Callout, Heading } from '@radix-ui/themes';
+import Problem, { ProblemProps } from '@/components/ProblemTable'
+import { Theme, Text, Flex, Callout, Heading, Box, TextArea } from '@radix-ui/themes';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Button } from '@/components/ui/button'
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import Link from 'next/link';
+import { Textarea } from '@/components/ui/textarea';
+import { useSearchParams } from 'next/navigation';
 
 export default function Home() {
-  const [problem, setProblem] = useState<ProblemProps>({ numRestrictions: 2, numVariables: 2 });
+  const searchParams = useSearchParams()!
+  const [problem, setProblem] = useState<ProblemProps>({ numRestrictions: 0, numVariables: 0 });
   const [error, setError] = useState<boolean>(false);
+  const [page, setPage] = useState<"text" | "math" | undefined>(undefined);
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams)
+      params.set(name, value)
+
+      return params.toString()
+    },
+    [searchParams]
+  )
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(Number.parseInt(e.target.value) > 1 && Number.parseInt(e.target.value) <= 10){
+    if (Number.parseInt(e.target.value) > 1 && Number.parseInt(e.target.value) <= 10) {
       setProblem((prevFormData) => {
         return {
           ...prevFormData,
@@ -24,26 +46,73 @@ export default function Home() {
     setError(true);
   }
 
-  const handleResolve = async () => {
-    const response = await fetch("/api/simplex")
-  };
 
   return (
     <main>
-      <Theme>
-        <Container size="3" className="mt-4">
-          <Flex align="center" direction="column" gap="5" justify="center">
-            <Heading className="">Calculadora Simplex</Heading>
+      {page === undefined ? (
+        <Flex gap="9" justify="center" >
+          <Card className="shadow-lg h-full max-w-[400px]">
+            <CardHeader>
+              <CardTitle>Descrever Problema</CardTitle>
+              <CardDescription>
+                Descrever o problema para ser montado e resolvido pela IA da OpenAI.
+                <br />
+                Obs: Ferramenta Experimental
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Ex:</p>
+              <p>Na minha fábrica, são produzidos dois tipos de mesas, A e B.
+                A mesa A requer 6 horas de trabalho na seção de carpintaria e 4 hora na seção de acabamento.
+                A mesa B requer 4 hora de trabalho na seção de carpintaria e 7 horas na seção de acabamento.
+                A seção de carpintaria tem 120 horas disponíveis por semana e a seção de acabamento tem 150 horas disponíveis por semana.
+                O lucro por unidade é de R$ 45,00 para a mesa A e R$ 27,00 para a mesa B. Gere as equações de restrição e a equação de maximização do lucro.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button className="w-full" onClick={() => { setPage("text") }}>Descrever</Button>
+            </CardFooter>
+          </Card>
+          <Card className="shadow-lg h-full">
+            <CardHeader>
+              <CardTitle>Digitar Variáveis</CardTitle>
+              <CardDescription>Preencher manualmente as equações com os coeficientes.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Ex:</p>
+              <p>6X<small>1</small> + 4X<small>2</small> &le; 24</p>
+              <p>X<small>1</small> + 2X<small>2</small> &le; 6</p>
+              <p>-X<small>1</small> + X<small>2</small> &le; 1</p>
+              <br />
+              <p>Máx. Z = 5X<small>1</small> + 4X<small>2</small></p>
+            </CardContent>
+            <CardFooter>
+              <Button onClick={() => setPage("math")} className="w-full">Digitar</Button>
+            </CardFooter>
+          </Card>
+        </Flex>
+      ) : page === "math" ?
+        (
+          <Flex gap="5" direction="column" justify="center" align="center">
             <Flex align="center" direction="column" className="w-full" gap="1">
               <Label htmlFor="restriction">Restrições</Label>
-              <Input onChange={handleChange} name="numRestrictions" placeholder="Num. de Restrições" className="w-1/2" id='restriction'/>
+              <Input onChange={handleChange} name="numRestrictions" placeholder="Num. de Restrições" className="w-1/2" id='restriction' />
             </Flex>
             <Flex align="center" direction="column" className="w-full" gap="1">
               <Label htmlFor="variables">Variáveis</Label>
-              <Input onChange={handleChange} name="numVariables" placeholder="Num. de Variáveis" className="w-1/2" id='variables'/>
+              <Input onChange={handleChange} name="numVariables" placeholder="Num. de Variáveis" className="w-1/2" id='variables' />
             </Flex>
-            <Problem numRestrictions={problem.numRestrictions} numVariables={problem.numVariables} />
-            <Button onClick={() => handleResolve()} >Resolver</Button>
+            {/* <Button onClick={() => handleResolve()} >Resolver</Button> */}
+            <Button>
+              <Link href={
+                "/problem" + "?" + createQueryString("res", problem.numRestrictions.toString()) + 
+                "&" + createQueryString("var", problem.numVariables.toString())
+                }
+              >
+                Próximo
+              </Link>
+            </Button>
+            <Button onClick={() => setPage(undefined)} variant="link">Voltar</Button>
             {error && (
               <Callout.Root color="red">
                 <Callout.Text>
@@ -52,8 +121,17 @@ export default function Home() {
               </Callout.Root>
             )}
           </Flex>
-        </Container>
-      </Theme>
+        )
+        :
+        (
+          <Flex gap="5" direction="column" justify="center" align="center">
+            <Textarea placeholder="Digite o problema." />
+            <Button>Próximo</Button>
+            <Button onClick={() => setPage(undefined)} variant="link">Voltar</Button>
+          </Flex>
+        )
+      }
+
     </main>
   )
 }
