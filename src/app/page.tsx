@@ -46,6 +46,33 @@ export default function Home() {
     setError(true);
   }
 
+  /* Estabelecendo conexão com a API con_gpt */
+  const [problemText, setProblemText] = useState('');
+
+  const handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setProblemText(event.target.value);
+  };
+
+  const sendProblemToAPI = async () => {
+    try {
+      const response = await fetch('/api/openai/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ problemText }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao enviar o problema para a API');
+      }
+
+      const problemJSON = await response.json();
+      // Faça algo com o JSON do problema retornado pela API
+    } catch (error) {
+      console.error('Erro ao enviar o problema para a API:', error);
+    }
+  };
 
   return (
     <main>
@@ -105,9 +132,9 @@ export default function Home() {
             {/* <Button onClick={() => handleResolve()} >Resolver</Button> */}
             <Button>
               <Link href={
-                "/problem" + "?" + createQueryString("res", problem.numRestrictions.toString()) + 
+                "/problem" + "?" + createQueryString("res", problem.numRestrictions.toString()) +
                 "&" + createQueryString("var", problem.numVariables.toString())
-                }
+              }
               >
                 Próximo
               </Link>
@@ -125,8 +152,8 @@ export default function Home() {
         :
         (
           <Flex gap="5" direction="column" justify="center" align="center">
-            <Textarea placeholder="Digite o problema." />
-            <Button>Próximo</Button>
+            <Textarea placeholder="Digite o problema." value={problemText} onChange={handleTextareaChange} />
+            <Button onClick={sendProblemToAPI}>Próximo</Button>
             <Button onClick={() => setPage(undefined)} variant="link">Voltar</Button>
           </Flex>
         )

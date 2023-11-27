@@ -8,7 +8,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  
+
   require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
 
   const apiKey = process.env.OPENAI_API_KEY; // Armazena a OPENAI_API_KEY na variável apiKey
@@ -77,7 +77,7 @@ Sua resposta deve conter apenas o JSON com os valores das equações do problema
 `;
 
   //Recuperando question do request
-  const pergunta = req.body.question;
+  const pergunta = req.body.problemText;
 
   //Chamada da API
   const json = client.chat.completions.create({
@@ -148,7 +148,9 @@ Sua resposta deve conter apenas o JSON com os valores das equações do problema
 
       return json;
     })
-    .catch((error: any) => console.error(error));
-
+    .catch((error: any) => {
+      console.error(error);
+      return error;
+    });
   return res.status(200).json(json);
 }
