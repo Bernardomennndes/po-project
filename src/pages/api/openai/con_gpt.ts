@@ -8,6 +8,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+  
   require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
 
   const apiKey = process.env.OPENAI_API_KEY; // Armazena a OPENAI_API_KEY na variável apiKey
@@ -75,9 +76,8 @@ Em caso de uma variável não ser usada em uma restrição mas ser usada em outr
 Sua resposta deve conter apenas o JSON com os valores das equações do problema sem nenhuma explicação adicional.
 `;
 
-  const pergunta = `
-Na minha fábrica, são produzidos dois tipos de mesas, A e B. A mesa A requer 6 horas de trabalho na seção de carpintaria e 4 hora na seção de acabamento. A mesa B requer 4 hora de trabalho na seção de carpintaria e 7 horas na seção de acabamento. A seção de carpintaria tem 120 horas disponíveis por semana e a seção de acabamento tem 150 horas disponíveis por semana. O lucro por unidade é de R$ 45,00 para a mesa A e R$ 27,00 para a mesa B. Gere as equações de restrição e a equação de maximização do lucro.
-`;
+  //Recuperando question do request
+  const pergunta = req.body.question;
 
   //Chamada da API
   const json = client.chat.completions.create({
@@ -152,9 +152,3 @@ Na minha fábrica, são produzidos dois tipos de mesas, A e B. A mesa A requer 6
 
   return res.status(200).json(json);
 }
-
-
-
-
-
-
