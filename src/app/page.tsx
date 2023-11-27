@@ -67,7 +67,11 @@ export default function Home() {
         throw new Error('Erro ao enviar o problema para a API');
       }
 
+      console.log("Enviando problema para a API...")
       const problemJSON = await response.json();
+      console.log('Problema enviado para a API com sucesso!');
+      console.log("Resposta da API: " + JSON.stringify(problemJSON));
+
       // Faça algo com o JSON do problema retornado pela API
     } catch (error) {
       console.error('Erro ao enviar o problema para a API:', error);
