@@ -56,7 +56,7 @@ export default function Home() {
   const sendProblemToAPI = async () => {
     try {
       const response = await fetch('/api/openai/', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
