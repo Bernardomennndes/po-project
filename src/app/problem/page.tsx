@@ -1,11 +1,11 @@
 "use client";
 
-import ProblemTable from "@/components/ProblemTable";
 import { Button } from "@/components/ui/button";
 import { Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import { notFound, useSearchParams } from "next/navigation";
 import React from "react";
+import ProblemTable from "./table";
 
 export default function Problem({ test }: Readonly<{ test: string }>) {
   const searchParams = useSearchParams();
@@ -45,10 +45,14 @@ export default function Problem({ test }: Readonly<{ test: string }>) {
         numRestrictions={numRestrictions}
         numVariables={numVariables}
       />
-      <Button onClick={() => handleCallApi()}>Resolver</Button>
-      <Button variant="link">
-        <Link href="/">Voltar</Link>
-      </Button>
+
+      <Flex gap="2">
+        <Button variant="link">
+          <Link href="/">Voltar</Link>
+        </Button>
+
+        <Button onClick={() => handleCallApi()}>Resolver</Button>
+      </Flex>
     </Flex>
   );
 }
