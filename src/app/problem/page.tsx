@@ -1,11 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Container, Flex } from "@radix-ui/themes";
-import Link from "next/link";
+import { Container } from "@radix-ui/themes";
 import { notFound, useSearchParams } from "next/navigation";
 import React from "react";
-import ProblemTable from "./table";
+import SimplexTable from "./table";
 
 export default function Problem() {
   const searchParams = useSearchParams();
@@ -41,9 +39,7 @@ export default function Problem() {
 
   return (
     <Container size="4" className="p-8">
-      <Flex align="center" justify="center" direction="column" gap="5">
-        <ProblemTable variables={2} constraints={3} />
-      </Flex>
+      <SimplexTable variables={2} constraints={3} />
     </Container>
   );
 }

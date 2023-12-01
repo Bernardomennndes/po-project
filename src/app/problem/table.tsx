@@ -1,12 +1,5 @@
-import { Flex, Text } from "@radix-ui/themes";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Flex } from "@radix-ui/themes";
+
 import { useState } from "react";
 import { Constraint } from "./interface";
 import { ZFunction } from "./z-function";
@@ -19,59 +12,56 @@ export interface SimplexTableProps {
   variables: number;
 }
 
-const ProblemTable = ({
+const SimplexTable = ({
   constraints: numConstraints,
   variables: numVariables,
 }: SimplexTableProps) => {
-  const [constraints, setConstraints] = useState<Constraint[]>(
-    Array.from({ length: numConstraints }, (_, index) => index + 1).map(
+  const [constraints, setConstraints] = useState<Constraint[]>(() => {
+    const vars = Array.from(
+      { length: numVariables },
+      (_, index) => index + 1
+    ).map((variable) => ({ name: `x${variable}`, coef: 0 }));
+
+    const bnds = {
+      type: "LTE",
+      lb: 0,
+      ub: 0,
+    } as Constraint["bnds"];
+
+    return Array.from({ length: numConstraints }, (_, index) => index + 1).map(
       (constraint) => ({
         name: `constraint-${constraint}`,
-        vars: Array.from({ length: numVariables }, (_, index) => index + 1).map(
-          (variable) => ({ name: `x${variable}`, coef: 0 })
-        ),
-        bnds: {
-          type: "LTE",
-          lb: 0,
-          ub: 0,
-        },
+        vars,
+        bnds,
       })
-    )
-  );
+    );
+  });
 
   return (
-    <Flex gap="3" align="center" direction="column">
-      <Select defaultValue="max">
-        <SelectTrigger>
-          <SelectValue placeholder="" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectItem value="max">Maximizar</SelectItem>
-            <SelectItem value="min">Minimizar</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+    <Flex justify="center">
+      <Flex gap="6" align="end" direction="column" className="w-fit">
+        <ZFunction numVariables={numVariables} />
 
-      <ZFunction numVariables={numVariables} />
+        <Flex gap="2" direction="column">
+          {constraints.map((constraint) => (
+            <TableLine
+              key={constraint.name}
+              constraint={constraint}
+              setConstraints={setConstraints}
+            />
+          ))}
+        </Flex>
 
-      {constraints.map((constraint) => (
-        <TableLine
-          key={constraint.name}
-          constraint={constraint}
-          setConstraints={setConstraints}
-        />
-      ))}
+        <Flex gap="2">
+          <Button variant="link">
+            <Link href="/">Voltar</Link>
+          </Button>
 
-      <Flex gap="2">
-        <Button variant="link">
-          <Link href="/">Voltar</Link>
-        </Button>
-
-        <Button onClick={() => console.log(constraints)}>Resolver</Button>
+          <Button onClick={() => console.log(constraints)}>Resolver</Button>
+        </Flex>
       </Flex>
     </Flex>
   );
 };
 
-export default ProblemTable;
+export default SimplexTable;
