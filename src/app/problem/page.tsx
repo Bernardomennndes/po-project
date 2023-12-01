@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Flex } from "@radix-ui/themes";
+import { Container, Flex } from "@radix-ui/themes";
 import Link from "next/link";
 import { notFound, useSearchParams } from "next/navigation";
 import React from "react";
 import ProblemTable from "./table";
 
-export default function Problem({ test }: Readonly<{ test: string }>) {
+export default function Problem() {
   const searchParams = useSearchParams();
 
   let numRestrictions: number, numVariables: number;
@@ -40,19 +40,10 @@ export default function Problem({ test }: Readonly<{ test: string }>) {
   }
 
   return (
-    <Flex align="center" justify="center" direction="column" gap="5">
-      <ProblemTable
-        numRestrictions={numRestrictions}
-        numVariables={numVariables}
-      />
-
-      <Flex gap="2">
-        <Button variant="link">
-          <Link href="/">Voltar</Link>
-        </Button>
-
-        <Button onClick={() => handleCallApi()}>Resolver</Button>
+    <Container size="4" className="p-8">
+      <Flex align="center" justify="center" direction="column" gap="5">
+        <ProblemTable variables={2} constraints={3} />
       </Flex>
-    </Flex>
+    </Container>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ProblemProps } from "@/components/ProblemTable";
+import { SimplexTableProps } from "@/components/ProblemTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ export default function Page() {
   const searchParams = useSearchParams()!;
 
   const [error, setError] = React.useState<boolean>(false);
-  const [problem, setProblem] = React.useState<ProblemProps>({
+  const [problem, setProblem] = React.useState<SimplexTableProps>({
     numRestrictions: 0,
     numVariables: 0,
   });
