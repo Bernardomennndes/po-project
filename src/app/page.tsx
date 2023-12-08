@@ -42,7 +42,7 @@ export default function Home() {
         </Card>
       </Link>
 
-      <Link href="/variaveis">
+      <Link href="/simplex">
         <Card className="h-[560px] w-[400px] cursor-pointer transition-[transform] scale-100 hover:scale-105">
           <CardHeader>
             <CardTitle>Definir Variáveis</CardTitle>
