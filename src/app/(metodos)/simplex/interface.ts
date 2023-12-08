@@ -23,3 +23,8 @@ export type Parameters = {
   upper: Array<number | string>;
   lower: number[];
 };
+
+export type Configuration = {
+  variables: number;
+  constraints: number;
+};
