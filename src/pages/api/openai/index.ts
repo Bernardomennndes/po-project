@@ -1,5 +1,4 @@
-import OpenAI from 'openai';
-const GLPK = require("glpk.js");
+import OpenAI from "openai";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type ResponseData = {};
@@ -8,8 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-
-  require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
+  require("dotenv").config(); // Carrega as variáveis de ambiente do arquivo .env
 
   const apiKey = process.env.OPENAI_API_KEY; // Armazena a OPENAI_API_KEY na variável apiKey
 
@@ -83,67 +81,38 @@ Sua resposta deve conter apenas o JSON com os valores das equações do problema
     console.log("Chegou na API");
   }
 
-  let json = JSON.parse('{}');
+  let json = JSON.parse("{}");
 
   //Chamada da API
-  client.chat.completions.create({
-    model: 'gpt-3.5-turbo-1106',
-    messages: [
-      {
-        role: 'system',
-        content: mensagem,
-      },
-      {
-        role: 'user',
-        content: pergunta,
-      },
-    ],
-  })
+  client.chat.completions
+    .create({
+      model: "gpt-3.5-turbo-1106",
+      messages: [
+        {
+          role: "system",
+          content: mensagem,
+        },
+        {
+          role: "user",
+          content: pergunta,
+        },
+      ],
+    })
     .catch((error: any) => console.error(error))
     .then((response: any) => {
-
       let mensagem = response.choices[0].message.content;
       console.log("GPT RESPONDEU");
 
       //Removendo ```json do início e do fim da mensagem caso exista
-      if (mensagem.startsWith('```json')) {
+      if (mensagem.startsWith("```json")) {
         mensagem = mensagem.substring(7);
       }
-      if (mensagem.endsWith('```')) {
+      if (mensagem.endsWith("```")) {
         mensagem = mensagem.substring(0, mensagem.length - 3);
       }
 
       //Convertendo mensagem para json
       json = JSON.parse(mensagem);
-
-      const glpk = GLPK();
-
-      const options = {
-        msglev: glpk.GLP_MSG_ALL,
-        presol: true,
-        cb: {
-          call: (progress: any) => console.log(progress),
-          each: 1,
-        },
-      };
-
-      //Convertendo type da função objetivo para o formato da biblioteca GLPK
-      if (['max', 'Max', 'MAX'].includes(json.objective.direction)) {
-        json.objective.direction = glpk.GLP_MAX;
-      } else if (['min', 'Min', 'MIN'].includes(json.objective.direction)) {
-        json.objective.direction = glpk.GLP_MIN;
-      }
-
-      //Convertendo type das restrições para o formato da biblioteca GLPK
-      json.subjectTo.forEach((element: any) => {
-        if (['<=', 'up', 'UP'].includes(element.bnds.type)) {
-          element.bnds.type = glpk.GLP_UP;
-        } else if (['=', 'fx', 'FX'].includes(element.bnds.type)) {
-          element.bnds.type = glpk.GLP_FX;
-        } else if (['>=', 'lo', 'LO'].includes(element.bnds.type)) {
-          element.bnds.type = glpk.GLP_LO;
-        }
-      });
 
       // Convertendo nomes das restrições para cons1, cons2... e das variáveis para x1, x2...
       let i = 1;
@@ -159,22 +128,18 @@ Sua resposta deve conter apenas o JSON com os valores das equações do problema
       });
 
       i = 1;
-      json.objective.vars.forEach(
-        (element: any) => {
-          element.name = `x${i}`;
-          i++;
-        }
-      );
+      json.objective.vars.forEach((element: any) => {
+        element.name = `x${i}`;
+        i++;
+      });
 
       //Adicionando atributo option
-      json.options = options;
       return json;
     })
     .catch((error: any) => {
       console.error(error);
       return error;
     });
-
 
   console.log(json);
 
