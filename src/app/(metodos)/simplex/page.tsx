@@ -77,7 +77,7 @@ export default function Problem() {
       iterationsQuantity: temp.length - 1,
     });
   }
-
+  
   function handleApplyConfiguration() {
     setParameters((prevParameters) => ({
       ...prevParameters,
@@ -126,7 +126,8 @@ export default function Problem() {
                 restricoes={parameters.restricoes.map((restricao, index) => (
                   [...restricao, parameters.rhs[index]]
                 ))}
-                solution={[]}
+                solucao={[parameters.objetivo[0], parameters.objetivo[1], result.z]}
+                relacoes={parameters.relacoes}
               />
             </Flex>
           </Flex>
