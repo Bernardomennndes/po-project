@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Flex } from "@radix-ui/themes";
@@ -15,7 +16,7 @@ export default function Page() {
   const sendProblemToAPI = async () => {
     try {
       const response = await fetch("/api/openai/", {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
