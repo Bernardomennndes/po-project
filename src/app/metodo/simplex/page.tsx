@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Flex } from "@radix-ui/themes";
+import { Container, Flex, Heading } from "@radix-ui/themes";
 import React from "react";
 import ParametersTable from "./parameters-table";
 import { Simplex } from "@/lib/simplex";
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import GraphicSolution from "./graphic-solution";
 
 export default function Problem() {
   const simplexRef = React.useRef(new Simplex());
@@ -242,6 +243,22 @@ export default function Problem() {
               z={result.z}
               iterationsQuantity={result.iterationsQuantity}
             />
+
+            <Flex className="w-[500px] h-[500px]" direction="column">
+              <Heading size="4">Solução Gráfica</Heading>
+              <GraphicSolution
+                restricoes={parameters.restricoes.map((restricao, index) => [
+                  ...restricao,
+                  parameters.rhs[index],
+                ])}
+                solucao={[
+                  parameters.objetivo[0],
+                  parameters.objetivo[1],
+                  result.z,
+                ]}
+                relacoes={parameters.relacoes}
+              />
+            </Flex>
           </Flex>
         )}
       </Flex>
