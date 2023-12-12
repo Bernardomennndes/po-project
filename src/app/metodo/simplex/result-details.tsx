@@ -18,9 +18,9 @@ export default function ResultDetails({
 }: Readonly<ResultDetailsProps>) {
   return (
     <section className="">
-      <div className="flex items-start">
-        <div className="w-[240px] pt-4 flex flex-col gap-2">
-          <div className="flex items-end gap-0">
+      <div className="flex gap-8 items-start">
+        <div className="pt-4 flex flex-col gap-2">
+          <div className="flex flex-col gap-0">
             <h2 className="text-4xl text-green-600">
               {Number(+z["FuncaoObjetivo"])
                 .toFixed(2)
@@ -34,9 +34,6 @@ export default function ResultDetails({
                 ? z["TipoResultado"]
                 : "Solução Inviável."}
             </span>
-          </div>
-          <div className="text-md text-muted-foreground">
-            <span className="">{`Quantidade de Iterações: ${iterationsQuantity}`}</span>
           </div>
         </div>
 

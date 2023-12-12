@@ -33,6 +33,8 @@ export default function ResultTable({
 
         const baseVariables = simplexRef.current.base(index);
 
+        console.log(baseVariables, index);
+
         return (
           <div key={index} className="p-4 border border-neutral-200 rounded-lg">
             <h3 className="w-full pb-2 mb-2 border-b border-neutral-200 text-md text-muted-foreground">{`Iteração ${
@@ -50,9 +52,9 @@ export default function ResultTable({
 
                   {Array.from(
                     { length: result[index][0].length - 3 },
-                    (_, index) => index + 1
+                    (_, index) => index
                   ).map((variableIndex) => (
-                    <th key={variableIndex}>{`x${variableIndex}`}</th>
+                    <th key={variableIndex}>{`x${variableIndex + 1}`}</th>
                   ))}
 
                   <th>
@@ -101,7 +103,7 @@ export default function ResultTable({
                       </td>
 
                       {Array.from(
-                        { length: result[index][0].length - 2 },
+                        { length: result[index][0].length - 3 },
                         (_, index) => index
                       ).map((innerVariableIndex) => {
                         const cellClassName =
@@ -127,7 +129,7 @@ export default function ResultTable({
                               >
                                 {Number(
                                   result[index][constraintIndex][
-                                    innerVariableIndex + 2
+                                    innerVariableIndex
                                   ]
                                 )
                                   .toFixed(2)
@@ -151,6 +153,20 @@ export default function ResultTable({
                           </td>
                         );
                       })}
+
+                      <td className="text-center">
+                        <p className="simplexcell-result">
+                          {Number(
+                            result[index][constraintIndex][
+                              result[index][constraintIndex].length - 1
+                            ]
+                          )
+                            .toFixed(2)
+                            .replace(".", ",")
+                            .replace("Infinity", "Infinito")
+                            .replace("NaN", "Indeterminado")}
+                        </p>
+                      </td>
 
                       {index < result.length - 1 &&
                       constraintIndex > 0 &&
