@@ -60,7 +60,7 @@ export default function Configuration({
             <SelectGroup>
               <SelectItem value="Generalizado">Generalizado</SelectItem>
               <SelectItem value="Grande M">Grande M</SelectItem>
-              <SelectItem value="Duas Fases">Duas Fases</SelectItem>
+              <SelectItem value="Duas Fases" disabled>Duas Fases</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
